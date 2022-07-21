@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import styles from './AddUser.module.css';
 import Card from "../UI/Card";
-import Wrapper from "../Helpers/Wrapper";
 import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
 
@@ -23,13 +22,7 @@ const AddUser = props => {
     const addUserHandler = (e) => {
         e.preventDefault();
 
-        if (+enteredAge < 1) {
-            setError({
-                title: 'Invalid Age',
-                message: 'Please enter an Age which is bigger than 1 '
-            })
-            return;// BUNLAR KALACAK ÇÜNKÜ BU ŞART OLDUĞUNDA LİSTEYE EKLEME YAPILMASIN İSTİYORUM
-        };
+       
 
         if (enteredUserName.trim().length === 0 || enteredAge.trim().length === 0) {
             setError({
@@ -38,14 +31,19 @@ const AddUser = props => {
             })
             return;
         }
+        if (+enteredAge < 1) {
+            setError({
+                title: 'Invalid Age',
+                message: 'Please enter an Age which is bigger than 1 '
+            })
+            return;// BUNLAR KALACAK ÇÜNKÜ BU ŞART OLDUĞUNDA LİSTEYE EKLEME YAPILMASIN İSTİYORUM
+        }
 
 
         props.onAddUser(enteredUserName, enteredAge);
 
 
         console.log(enteredUserName, enteredAge);
-
-
 
         setEnteredAge('');
         setEnteredUserName('');
@@ -57,7 +55,7 @@ const AddUser = props => {
 
 
     return (
-        <Wrapper>
+        <Fragment>
             {error && <ErrorModal title={error.title} message={error.message} onConfirm={errorHandler} />}
             <Card className={styles.input} >
                 <form onSubmit={addUserHandler}>
@@ -80,7 +78,7 @@ const AddUser = props => {
                 </form>
 
             </Card>
-        </Wrapper>
+        </Fragment>
     )
 };
 
