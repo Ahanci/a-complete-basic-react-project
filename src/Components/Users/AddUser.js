@@ -5,23 +5,10 @@ import Button from "../UI/Button";
 import ErrorModal from "../UI/ErrorModal";
 
 const AddUser = props => {
+
     const [enteredUserName, setEnteredUserName] = useState('');
     const [enteredAge, setEnteredAge] = useState('');
-
-    const addUserHandler = (e) => {
-        e.preventDefault();
-        if (enteredUserName.trim().length === 0 || enteredAge.trim().length === 0) {
-            return;
-        }
-        if (+enteredAge < 1) {
-            return;
-        }
-        props.onAddUser(enteredUserName, enteredAge);
-
-        setEnteredAge('');
-        setEnteredUserName('');
-    }
-
+    const [error, setError] = useState();
     const userNameChangeHandler = e => {
         setEnteredUserName(e.target.value)
 
@@ -31,9 +18,46 @@ const AddUser = props => {
         setEnteredAge(e.target.value)
 
     }
+
+    const addUserHandler = (e) => {
+        e.preventDefault();
+
+        if (+enteredAge < 1) {
+            setError({
+                title: 'Invalid Age',
+                message: 'Please enter an Age which is bigger than 1 '
+            })
+            return;// BUNLAR KALACAK ÇÜNKÜ BU ŞART OLDUĞUNDA LİSTEYE EKLEME YAPILMASIN İSTİYORUM
+        };
+
+        if (enteredUserName.trim().length === 0 || enteredAge.trim().length === 0) {
+            setError({
+                title: 'Invalid Input',
+                message: 'please enter a valid name and age(values must not be empty)'
+            })
+            return;
+        }
+
+
+        props.onAddUser(enteredUserName, enteredAge);
+
+
+        console.log(enteredUserName, enteredAge);
+
+
+
+        setEnteredAge('');
+        setEnteredUserName('');
+    }
+
+    const errorHandler = () => {
+        setError(null); // this treaty as a falsy value and so that there will not be a modal 
+    }
+
+
     return (
         <div>
-            <ErrorModal title='an error occurred' message='hoppps' />
+            {error && <ErrorModal title={error.title} message={error.message} onConfirm={errorHandler} />}
             <Card className={styles.input} >
                 <form onSubmit={addUserHandler}>
                     <label htmlFor="username">username</label>
@@ -58,8 +82,6 @@ const AddUser = props => {
 
             </Card>
         </div>
-
-
     )
 };
 
